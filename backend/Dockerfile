@@ -11,7 +11,7 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 WORKDIR /app
 
 # Copy requirements.txt
-COPY requirements.txt requirements.txt
+COPY backend/requirements.txt requirements.txt
 
 # Install packages from requirements.txt
 # hadolint ignore=DL3013
