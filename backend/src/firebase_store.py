@@ -47,17 +47,20 @@ Date:
     2024-06-28
 """
 import json
+from dotenv import load_dotenv
 import os, base64
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 
-secret = os.getenv('SECRET_FILE')
-print("secret")
-print(secret)
+load_dotenv(dotenv_path='secrets.env')
+encoded_secret = os.getenv('SECRET_FILE')
+if encoded_secret is None:
+    raise ValueError("The 'SECRET_FILE' environment variable is not set.")
 
 # cred = credentials.Certificate("backend/secrets/ppp-tomlui-firebase.json")
-cred = credentials.Certificate(json.loads(base64.b64decode(secret)))
+decoded_secret = base64.b64decode(encoded_secret).decode('utf-8')
+cred = credentials.Certificate(json.loads(decoded_secret))
 firebase_admin.initialize_app(cred)
 
 db = firestore.client()
