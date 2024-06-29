@@ -52,8 +52,9 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 
-secret = os.environ.get("SECRET_FILE")
-secret = os.getenv('FIREBASE_SECRET')
+secret = os.getenv('SECRET_FILE')
+print("secret")
+print(secret)
 
 # cred = credentials.Certificate("backend/secrets/ppp-tomlui-firebase.json")
 cred = credentials.Certificate(json.loads(base64.b64decode(secret)))
