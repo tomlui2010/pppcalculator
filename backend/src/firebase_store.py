@@ -47,11 +47,14 @@ Date:
     2024-06-28
 """
 import json
+import os, base64
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 
-cred = credentials.Certificate("secrets/ppp-tomlui-firebase.json")
+secret = os.environ.get("SECRET_FILE")
+# cred = credentials.Certificate("backend/secrets/ppp-tomlui-firebase.json")
+cred = credentials.Certificate(base64.b64decode(secret))
 firebase_admin.initialize_app(cred)
 
 db = firestore.client()
