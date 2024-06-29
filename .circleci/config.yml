@@ -41,7 +41,7 @@ jobs:
       - run:
           name: Run Docker container
           command: |
-            docker run -p 5001:5000 tomlui2010/pppcalculator:latest
+            docker run --env-file backend/secrets.env -p 5001:5000 tomlui2010/pppcalculator:latest
 
 
 workflows:

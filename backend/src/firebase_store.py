@@ -59,8 +59,13 @@ if encoded_secret is None:
     raise ValueError("The 'SECRET_FILE' environment variable is not set.")
 
 # cred = credentials.Certificate("backend/secrets/ppp-tomlui-firebase.json")
-decoded_secret = base64.b64decode(encoded_secret).decode('utf-8')
-cred = credentials.Certificate(json.loads(decoded_secret))
+# decoded_secret = base64.b64decode(encoded_secret).decode('utf-8')
+try:
+    decoded_secret = base64.b64decode(encoded_secret).decode('utf-8')
+    credentials_info = json.loads(decoded_secret)
+except Exception as e:
+    raise ValueError("Failed to decode 'SECRET_FILE'. Ensure it's base64 encoded properly.") from e
+cred = credentials.Certificate(credentials_info)
 firebase_admin.initialize_app(cred)
 
 db = firestore.client()
