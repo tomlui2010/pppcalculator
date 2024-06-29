@@ -29,6 +29,10 @@ jobs:
           name: Create secrets env file
           command: |
             echo "SECRET_FILE=${secrets}" > backend/secrets.env
+      - run:
+          name: Run Docker container
+          command: |
+            docker run -p 5001:5000 tomlui2010/pppcalculator:latest
 
 
 
