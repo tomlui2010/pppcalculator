@@ -19,7 +19,7 @@ RUN pip install --upgrade pip &&\
     pip install --trusted-host pypi.python.org --no-cache-dir -r requirements.txt
 
 # Copy source code to working directory
-COPY . app.py /app/
+COPY . backend/app.py /app/
 
 EXPOSE 5000
 ENV FLASK_APP=app.py
