@@ -1,17 +1,44 @@
-version: 2.1
-orbs:
-  python: circleci/python@2.1.1
+version: 2
 jobs:
-  build_and_test: # this can be any name you choose
-    executor: python/default # use the default executor defined within the orb
+  backend_build:
+    docker:
+      - image: cimg/python:3.10.2
     steps:
-      - checkout # checkout source code
-      - python/install-packages:
-          pkg-manager: pip
+      - checkout
       - run:
-          name: Run tests
-          command: python -m pytest
+          name: Install pip packages
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -r requirements.txt
+
+
+  backend_deploy:
+    docker:
+      - image: cimg/base:2022.06
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Build and push to Docker Hub
+          command: |
+            docker build -t tomlui2010/$IMAGE_NAME:latest .
+            echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USER_ID" --password-stdin
+            docker push tomlui2010/$IMAGE_NAME:latest
+      - run:
+          name: Create secrets env file
+          command: |
+            echo "SECRET_FILE=${secrets}" > secrets.env
+
+
+
 workflows:
-  build_test_deploy:
+  version: 2
+  backend:
     jobs:
-      - build_and_test
+      - backend_build
+      - backend_deploy:
+          requires:
+            - backend_build
+          context:
+            - ppp
