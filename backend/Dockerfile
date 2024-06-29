@@ -1,7 +1,5 @@
 FROM python:3.7.3-stretch
 
-EXPOSE 8000
-
 # Setup and activate virtual python environment 
 ENV VIRTUAL_ENV=/opt/.venv
 RUN python3 -m venv $VIRTUAL_ENV
