@@ -1,4 +1,4 @@
-FROM python:3.7.3-stretch
+FROM python:3.9-slim-buster
 
 # Setup and activate virtual python environment 
 ENV VIRTUAL_ENV=/opt/.venv
