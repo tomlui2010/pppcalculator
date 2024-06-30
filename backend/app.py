@@ -154,6 +154,7 @@ def calculate():
 
 
 if __name__ == "__main__":
+    # Flask app is set to listen on all interfaces
     app.run(host="0.0.0.0", port=5000)
     # app.run(debug=True)
     
