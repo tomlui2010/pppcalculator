@@ -1,43 +1,27 @@
 version: 2
 jobs:
-  backend_build:
+  backend_app_build:
     docker:
       - image: cimg/python:3.10.2
     steps:
       - checkout
+      - setup_remote_docker
       - run:
           name: Install pip packages
           command: |
             python3 -m venv ~/.venv
             source ~/.venv/bin/activate
             pip install -r backend/requirements.txt
-
-
-  backend_image_publish:
-    docker:
-      - image: cimg/base:2022.06
-    steps:
-      - checkout
-      - setup_remote_docker
       - run:
           name: Build and push to Docker Hub
           command: |
             docker build -f backend/Dockerfile -t tomlui2010/$IMAGE_NAME:latest .
             echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USER_ID" --password-stdin
             docker push tomlui2010/$IMAGE_NAME:latest
-
-
-  backend_deploy:
-    docker:
-      - image: cimg/python:3.10.2
-    steps:
-      - checkout
-      - setup_remote_docker
       - run:
           name: Create secrets env file
           command: |
             echo "SECRET_FILE=${secrets}" > backend/secrets.env
-            cat backend/secrets.env
       - run:
           name: Run Docker container
           command: |
@@ -48,14 +32,6 @@ workflows:
   version: 2
   backend:
     jobs:
-      - backend_build
-      - backend_image_publish:
-          requires:
-            - backend_build
+      - backend_app_build:
           context:
             - ppp
-      - backend_deploy:
-          requires:
-           - backend_image_publish
-          context:
-           - ppp
