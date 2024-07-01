@@ -78,15 +78,13 @@ jobs:
             INSTANCE_IP=$(aws ec2 describe-instances --instance-ids $INSTANCE_ID --query 'Reservations[0].Instances[0].PublicIpAddress' --output text --region $AWS_REGION)
             echo "Instance IP: $INSTANCE_IP"
             echo "INSTANCE_IP=$INSTANCE_IP" >> $BASH_ENV
-      - run:
-          name: Setup known hosts
-          command: |
-            ssh-keyscan -H $INSTANCE_IP >> ~/.ssh/known_hosts
+
       - run:
           name: Get EC2 instance public IP
           command: |
             echo "[BACKEND]" > /tmp/inventory.txt
             echo "$INSTANCE_IP ansible_user=ec2-user ansible_ssh_private_key_file=~/.ssh/id_rsa" >> /tmp/inventory.txt
+            echo "$INSTANCE_IP" > /tmp/instance_ip.txt
             cat /tmp/inventory.txt
       # - run:
       #     name: Add back-end ip to ansible inventory
@@ -102,6 +100,7 @@ jobs:
           root: /tmp
           paths: 
             - inventory.txt
+            - instance_ip.txt
       # Use Ansible to setup Docker and deploy Flask app on EC2 instance
       # - run:
       #     name: Setup Docker and deploy Flask app with Ansible
@@ -123,6 +122,11 @@ jobs:
           command: |
             apk add --update ansible openssh-client
             eval $(ssh-agent -s)
+      - run:
+          name: Setup known hosts
+          command: |
+            export INSTANCE_IP=$(cat /tmp/instance_ip.txt)
+            ssh-keyscan -H $INSTANCE_IP >> ~/.ssh/known_hosts
       - run:
           name: Run Playbook and Configure EC2 instance 
           command: |
