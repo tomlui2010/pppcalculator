@@ -75,17 +75,18 @@ jobs:
       - run:
           name: Get EC2 instance public IP
           command: |
-            aws ec2 describe-instances --filters Name=tag:Name,Values="pppcalculator-backend-${CIRCLE_WORKFLOW_ID:0:7}" --query "Reservations[0].Instances[0].PublicIpAddress" --output text > ec2_ip.txt
-      - run:
-          name: Add back-end ip to ansible inventory
-          command: |
-             echo "[BACKEND]" > /tmp/inventory.txt
-             echo "Waiting for the EC2 instance to be in the running state..."
-             INSTANCE_ID=$(aws ec2 describe-instances --query "Reservations[*].Instances[?Tags[?Key=='Name' && Value=='pppcalculator-backend-${CIRCLE_WORKFLOW_ID:0:7}']].InstanceId" --output text)
-             PUBLIC_IP=$(aws ec2 describe-instances --instance-ids "$INSTANCE_ID" --query 'Reservations[0].Instances[0].PublicIpAddress' --output text)
-             echo "$PUBLIC_IP" >> /root/project/.circleci/ansible/inventory.txt
-             echo "$PUBLIC_IP" >> /tmp/inventory.txt
-             cat /tmp/inventory.txt
+            aws ec2 describe-instances --filters Name=tag:Name,Values="pppcalculator-backend-${CIRCLE_WORKFLOW_ID:0:7}" --query "Reservations[0].Instances[0].PublicIpAddress" --output text > /tmp/inventory.txt
+            cat /tmp/inventory.txt
+      # - run:
+      #     name: Add back-end ip to ansible inventory
+      #     command: |
+      #        echo "[BACKEND]" > /tmp/inventory.txt
+      #        echo "Waiting for the EC2 instance to be in the running state..."
+      #        INSTANCE_ID=$(aws ec2 describe-instances --query "Reservations[*].Instances[?Tags[?Key=='Name' && Value=='pppcalculator-backend-${CIRCLE_WORKFLOW_ID:0:7}']].InstanceId" --output text)
+      #        PUBLIC_IP=$(aws ec2 describe-instances --instance-ids "$INSTANCE_ID" --query 'Reservations[0].Instances[0].PublicIpAddress' --output text)
+      #        echo "$PUBLIC_IP" >> /root/project/.circleci/ansible/inventory.txt
+      #        echo "$PUBLIC_IP" >> /tmp/inventory.txt
+      #        cat /tmp/inventory.txt
       - persist_to_workspace:
           root: /tmp
           paths: 
@@ -125,5 +126,8 @@ workflows:
           context:
             - ppp
       - deploy-infrastructure:
+         context: 
+          - ppp
+      - configure_infrastructure:
          context: 
           - ppp
