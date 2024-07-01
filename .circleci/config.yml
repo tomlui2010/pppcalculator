@@ -83,7 +83,7 @@ jobs:
           name: Get EC2 instance public IP
           command: |
             echo "[BACKEND]" > /tmp/inventory.txt
-            echo "$INSTANCE_IP ansible_user=ec2-user ansible_ssh_private_key_file=~/.ssh/id_rsa" >> /tmp/inventory.txt
+            echo "$INSTANCE_IP ansible_user=ubuntu ansible_ssh_private_key_file=~/.ssh/id_rsa" >> /tmp/inventory.txt
             echo "$INSTANCE_IP" > /tmp/instance_ip.txt
             cat /tmp/inventory.txt
       # - run:
