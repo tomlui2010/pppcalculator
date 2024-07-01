@@ -19,10 +19,6 @@ jobs:
             echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USER_ID" --password-stdin
             docker push tomlui2010/$IMAGE_NAME:latest
       - run:
-          name: Install AWS CLI
-          command: |
-            sudo pip install awscli
-      - run:
           name: Create secrets env file
           command: |
             echo "SECRET_FILE=${secrets}" > backend/secrets.env
