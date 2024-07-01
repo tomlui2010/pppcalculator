@@ -19,6 +19,10 @@ jobs:
             echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USER_ID" --password-stdin
             docker push tomlui2010/$IMAGE_NAME:latest
       - run:
+          name: Install AWS CLI
+          command: |
+            sudo pip install awscli
+      - run:
           name: Create secrets env file
           command: |
             echo "SECRET_FILE=${secrets}" > backend/secrets.env
@@ -26,7 +30,54 @@ jobs:
           name: Run Docker container
           command: |
             docker run --env-file backend/secrets.env -p 5000:5000 tomlui2010/pppcalculator:latest
-
+  deploy-infrastructure:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Install tar and gzip
+          command: |
+            yum update -y
+            yum install -y tar gzip
+            yum install -y jq
+      - run:
+          name: Configure AWS credentials
+          command: |
+            echo "[default]" > ~/.aws/credentials
+            echo "aws_access_key_id = $AWS_ACCESS_KEY_ID" >> ~/.aws/credentials
+            echo "aws_secret_access_key = $AWS_SECRET_ACCESS_KEY" >> ~/.aws/credentials
+      - run:
+          name: Ensure back-end infrastructure exists
+          command: |
+             set +e
+             aws cloudformation deploy  \
+              --template-file .circleci/files/backend.yml  \
+              --stack-name "pppcalculator-backend-${CIRCLE_WORKFLOW_ID:0:7}"  \
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" \
+              --tags project=pppcalculator
+             DEPLOY_EXIT_CODE=$?
+             if [ $DEPLOY_EXIT_CODE -ne 0 ]; then
+              aws cloudformation describe-stack-events --stack-name "pppcalculator-backend-${CIRCLE_WORKFLOW_ID:0:7}" >> /tmp/backend-output.txt
+              cat /tmp/backend-output.txt
+              exit 1
+             fi
+             set -e
+  # Wait for CloudFormation stack creation completion
+      - run:
+          name: Wait for EC2 instance creation
+          command: |
+            aws cloudformation wait stack-create-complete --stack-name "pppcalculator-backend-${CIRCLE_WORKFLOW_ID:0:7}"
+      # Get EC2 instance public IP address
+      - run:
+          name: Get EC2 instance public IP
+          command: |
+            aws ec2 describe-instances --filters Name=tag:Name,Values="pppcalculator-backend-${CIRCLE_WORKFLOW_ID:0:7}" --query "Reservations[0].Instances[0].PublicIpAddress" --output text > ec2_ip.txt
+      # Use Ansible to setup Docker and deploy Flask app on EC2 instance
+      - run:
+          name: Setup Docker and deploy Flask app with Ansible
+          command: |
+            ansible-playbook -i "{{ shell }}" setup-docker.yml --extra-vars "target=ec2-user@$(cat ec2_ip.txt)" --private-key ~/.ssh/my-key.pem
 
 workflows:
   version: 2
