@@ -41,7 +41,7 @@ Resources:
       SecurityGroups:
         - Ref: InstanceSecurityGroup
       KeyName: pppcalculatorhost 
-      ImageId: ami-01572eda7c4411960
+      ImageId: ami-0cf2b4e024cdb6960
       Tags:
         - Key: Name
           Value: !Sub pppcalculator-backend-${ID}
