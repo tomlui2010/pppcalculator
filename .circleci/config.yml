@@ -18,14 +18,14 @@ jobs:
             docker build -f backend/Dockerfile -t tomlui2010/$IMAGE_NAME:latest .
             echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USER_ID" --password-stdin
             docker push tomlui2010/$IMAGE_NAME:latest
-      - run:
-          name: Create secrets env file
-          command: |
-            echo "SECRET_FILE=${secrets}" > backend/secrets.env
-      - run:
-          name: Run Docker container
-          command: |
-            docker run --env-file backend/secrets.env -p 5000:5000 tomlui2010/pppcalculator:latest
+      # - run:
+      #     name: Create secrets env file
+      #     command: |
+      #       echo "SECRET_FILE=${secrets}" > backend/secrets.env
+      # - run:
+      #     name: Run Docker container
+      #     command: |
+      #       docker run --env-file backend/secrets.env -p 5000:5000 tomlui2010/$IMAGE_NAME:latest
   deploy-infrastructure:
     docker:
       - image: amazon/aws-cli
