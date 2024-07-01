@@ -83,29 +83,14 @@ jobs:
           name: Get EC2 instance public IP
           command: |
             echo "[BACKEND]" > /tmp/inventory.txt
-            echo "$INSTANCE_IP ansible_user=ubuntu >> /tmp/inventory.txt
+            echo "$INSTANCE_IP ansible_user=ubuntu" >> /tmp/inventory.txt
             echo "$INSTANCE_IP" > /tmp/instance_ip.txt
             cat /tmp/inventory.txt
-      # - run:
-      #     name: Add back-end ip to ansible inventory
-      #     command: |
-      #        echo "[BACKEND]" > /tmp/inventory.txt
-      #        echo "Waiting for the EC2 instance to be in the running state..."
-      #        INSTANCE_ID=$(aws ec2 describe-instances --query "Reservations[*].Instances[?Tags[?Key=='Name' && Value=='pppcalculator-backend-${CIRCLE_WORKFLOW_ID:0:7}']].InstanceId" --output text)
-      #        PUBLIC_IP=$(aws ec2 describe-instances --instance-ids "$INSTANCE_ID" --query 'Reservations[0].Instances[0].PublicIpAddress' --output text)
-      #        echo "$PUBLIC_IP" >> /root/project/.circleci/ansible/inventory.txt
-      #        echo "$PUBLIC_IP" >> /tmp/inventory.txt
-      #        cat /tmp/inventory.txt
       - persist_to_workspace:
           root: /tmp
           paths: 
             - inventory.txt
             - instance_ip.txt
-      # Use Ansible to setup Docker and deploy Flask app on EC2 instance
-      # - run:
-      #     name: Setup Docker and deploy Flask app with Ansible
-      #     command: |
-      #       ansible-playbook -i "{{ shell }}" setup-docker.yml --extra-vars "target=ec2-user@$(cat ec2_ip.txt)" --private-key ~/.ssh/my-key.pem
   configure_infrastructure:
     docker:
       - image: python:3.7-alpine3.11
