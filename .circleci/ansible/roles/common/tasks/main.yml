@@ -8,3 +8,11 @@
   become: yes
   apt:
     upgrade: yes
+
+- name: Ensure Python 3 is installed
+  raw: sudo apt-get update && sudo apt-get install -y python3 python3-pip
+  changed_when: false
+
+- name: Ensure Python 3 'six' module is installed
+  raw: sudo pip3 install six
+  changed_when: false
