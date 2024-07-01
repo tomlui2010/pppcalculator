@@ -38,7 +38,7 @@ jobs:
             yum install -y tar gzip
             yum install -y jq
       - run:
-          name: Ensure back-end infrastructure exists
+          name: Create backend infrastructure
           command: |
              set +e
              aws cloudformation deploy  \
