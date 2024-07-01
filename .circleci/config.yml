@@ -117,7 +117,7 @@ jobs:
           command: |
             #  cat /tmp/inventory.txt
             #  cat /tmp/public_dns.env
-            ansible-playbook --extra-vars "aws_access_key_id=${AWS_ACCESS_KEY_ID} aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}" -i /tmp/inventory.txt playbook.yml 
+            ansible-playbook --extra-vars "aws_access_key_id=${AWS_ACCESS_KEY_ID} aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}" -i /tmp/inventory.txt .circleci/ansible/playbook.yml 
 workflows:
   version: 2
   backend:
