@@ -129,5 +129,7 @@ workflows:
          context: 
           - ppp
       - configure_infrastructure:
-         context: 
-          - ppp
+          requires:
+            - deploy-infrastructure
+          context: 
+            - ppp
