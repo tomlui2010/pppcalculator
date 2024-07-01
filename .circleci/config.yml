@@ -113,8 +113,8 @@ jobs:
     steps:
       - checkout
       # You need to only provide this at one place. Either here or in the web UI ssh keys
-      - add_ssh_keys:
-          fingerprints: ["SHA256:oFBiZKJzzb55dqfLxh2PcBgLpJGm4kvpq88vgWTUZ1Q"]
+      # - add_ssh_keys:
+      #     fingerprints: ["SHA256:oFBiZKJzzb55dqfLxh2PcBgLpJGm4kvpq88vgWTUZ1Q"]
       - attach_workspace:
           at: /tmp
       - run: 
@@ -127,6 +127,11 @@ jobs:
           command: |
             export INSTANCE_IP=$(cat /tmp/instance_ip.txt)
             ssh-keyscan -H $INSTANCE_IP >> ~/.ssh/known_hosts
+      - run:
+          name: Start SSH Agent and Add Key
+          command: |
+            eval $(ssh-agent -s)
+            ssh-add ~/.ssh/id_rsa # Adjust the path if needed
       - run:
           name: Run Playbook and Configure EC2 instance 
           command: |
