@@ -74,10 +74,10 @@ jobs:
           command: |
             aws ec2 describe-instances --filters Name=tag:Name,Values="pppcalculator-backend-${CIRCLE_WORKFLOW_ID:0:7}" --query "Reservations[0].Instances[0].PublicIpAddress" --output text > ec2_ip.txt
       # Use Ansible to setup Docker and deploy Flask app on EC2 instance
-      - run:
-          name: Setup Docker and deploy Flask app with Ansible
-          command: |
-            ansible-playbook -i "{{ shell }}" setup-docker.yml --extra-vars "target=ec2-user@$(cat ec2_ip.txt)" --private-key ~/.ssh/my-key.pem
+      # - run:
+      #     name: Setup Docker and deploy Flask app with Ansible
+      #     command: |
+      #       ansible-playbook -i "{{ shell }}" setup-docker.yml --extra-vars "target=ec2-user@$(cat ec2_ip.txt)" --private-key ~/.ssh/my-key.pem
 
 workflows:
   version: 2
