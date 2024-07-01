@@ -1,0 +1,1 @@
+docker_version: "{{ docker_version | default('latest') }}"

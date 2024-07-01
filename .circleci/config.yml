@@ -1,4 +1,17 @@
 version: 2
+commands:
+  destroy-environment:
+    description: Destroy cloudformation stacks given a workflow ID.
+    parameters:
+      stackname:
+        type: string
+    steps:
+      - run:
+          name: Delete backend and frontend stack on fail
+          when: on_fail
+          command: |
+            echo << parameters.stackname >>
+            aws cloudformation delete-stack --stack-name << parameters.stackname >> --debug
 jobs:
   backend_app_build:
     docker:
@@ -63,12 +76,47 @@ jobs:
           name: Get EC2 instance public IP
           command: |
             aws ec2 describe-instances --filters Name=tag:Name,Values="pppcalculator-backend-${CIRCLE_WORKFLOW_ID:0:7}" --query "Reservations[0].Instances[0].PublicIpAddress" --output text > ec2_ip.txt
+      - run:
+          name: Add back-end ip to ansible inventory
+          command: |
+             echo "[BACKEND]" > /tmp/inventory.txt
+             echo "Waiting for the EC2 instance to be in the running state..."
+             INSTANCE_ID=$(aws ec2 describe-instances --query "Reservations[*].Instances[?Tags[?Key=='Name' && Value=='pppcalculator-backend-${CIRCLE_WORKFLOW_ID:0:7}']].InstanceId" --output text)
+             PUBLIC_IP=$(aws ec2 describe-instances --instance-ids "$INSTANCE_ID" --query 'Reservations[0].Instances[0].PublicIpAddress' --output text)
+             echo "$PUBLIC_IP" >> /root/project/.circleci/ansible/inventory.txt
+             echo "$PUBLIC_IP" >> /tmp/inventory.txt
+             cat /tmp/inventory.txt
+      - persist_to_workspace:
+          root: /tmp
+          paths: 
+            - inventory.txt
       # Use Ansible to setup Docker and deploy Flask app on EC2 instance
       # - run:
       #     name: Setup Docker and deploy Flask app with Ansible
       #     command: |
       #       ansible-playbook -i "{{ shell }}" setup-docker.yml --extra-vars "target=ec2-user@$(cat ec2_ip.txt)" --private-key ~/.ssh/my-key.pem
+  configure_infrastructure:
+    docker:
+      - image: python:3.7-alpine3.11
 
+    steps:
+      - checkout
+      # You need to only provide this at one place. Either here or in the web UI ssh keys
+      # - add_ssh_keys:
+      #     fingerprints: ["SHA256:4tIF9h1n35rXfaRYvtiFZ0YFJ2dyDrpJi8RVNkisi5Y"]
+      - attach_workspace:
+          at: /tmp
+      - run: 
+          name: Install Ansible
+          command: |
+            apk add --update ansible openssh-client
+            eval $(ssh-agent -s)
+      - run:
+          name: Run Playbook and Configure Prometheus 
+          command: |
+            #  cat /tmp/inventory.txt
+            #  cat /tmp/public_dns.env
+            ansible-playbook --extra-vars "aws_access_key_id=${AWS_ACCESS_KEY_ID} aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}" -i /tmp/inventory.txt playbook.yml 
 workflows:
   version: 2
   backend:
