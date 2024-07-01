@@ -114,10 +114,8 @@ jobs:
             apk add --update ansible openssh-client
             eval $(ssh-agent -s)
       - run:
-          name: Run Playbook and Configure Prometheus 
+          name: Run Playbook and Configure EC2 instance 
           command: |
-            #  cat /tmp/inventory.txt
-            #  cat /tmp/public_dns.env
             ansible-playbook --extra-vars "aws_access_key_id=${AWS_ACCESS_KEY_ID} aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}" -i /tmp/inventory.txt .circleci/ansible/playbook.yml 
 workflows:
   version: 2
