@@ -1,6 +1,6 @@
 ---
  - name: Install Docker on AWS EC@ instance
-   hosts: backend
+   hosts: BACKEND
    become: true
    become_method: sudo
    become_user: root

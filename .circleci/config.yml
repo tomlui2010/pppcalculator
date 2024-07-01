@@ -75,6 +75,7 @@ jobs:
       - run:
           name: Get EC2 instance public IP
           command: |
+            echo "[BACKEND]" > /tmp/inventory.txt
             aws ec2 describe-instances --filters Name=tag:Name,Values="pppcalculator-backend-${CIRCLE_WORKFLOW_ID:0:7}" --query "Reservations[0].Instances[0].PublicIpAddress" --output text > /tmp/inventory.txt
             cat /tmp/inventory.txt
       # - run:
