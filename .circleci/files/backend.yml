@@ -44,4 +44,4 @@ Resources:
       ImageId: ami-01572eda7c4411960
       Tags:
         - Key: Name
-          Value: !Sub backend-${ID}
+          Value: !Sub pppcalculator-backend-${ID}
