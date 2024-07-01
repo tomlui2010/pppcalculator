@@ -71,12 +71,22 @@ jobs:
           name: Wait for EC2 instance creation
           command: |
             aws cloudformation wait stack-create-complete --stack-name "pppcalculator-backend-${CIRCLE_WORKFLOW_ID:0:7}"
-      # Get EC2 instance public IP address
+      - run:
+          name: Get instance public IP
+          command: |
+            INSTANCE_ID=$(aws cloudformation describe-stack-resources --stack-name "pppcalculator-backend-${CIRCLE_WORKFLOW_ID:0:7}" --query 'StackResources[?ResourceType==`AWS::EC2::Instance`].PhysicalResourceId' --output text --region $AWS_REGION)
+            INSTANCE_IP=$(aws ec2 describe-instances --instance-ids $INSTANCE_ID --query 'Reservations[0].Instances[0].PublicIpAddress' --output text --region $AWS_REGION)
+            echo "Instance IP: $INSTANCE_IP"
+            echo "INSTANCE_IP=$INSTANCE_IP" >> $BASH_ENV
+      - run:
+          name: Setup known hosts
+          command: |
+            ssh-keyscan -H $INSTANCE_IP >> ~/.ssh/known_hosts
       - run:
           name: Get EC2 instance public IP
           command: |
             echo "[BACKEND]" > /tmp/inventory.txt
-            aws ec2 describe-instances --filters Name=tag:Name,Values="pppcalculator-backend-${CIRCLE_WORKFLOW_ID:0:7}" --query "Reservations[0].Instances[0].PublicIpAddress" --output text >> /tmp/inventory.txt
+            echo "$INSTANCE_IP ansible_user=ec2-user ansible_ssh_private_key_file=~/.ssh/id_rsa" >> /tmp/inventory.txt
             cat /tmp/inventory.txt
       # - run:
       #     name: Add back-end ip to ansible inventory
@@ -104,8 +114,8 @@ jobs:
     steps:
       - checkout
       # You need to only provide this at one place. Either here or in the web UI ssh keys
-      # - add_ssh_keys:
-      #     fingerprints: ["SHA256:4tIF9h1n35rXfaRYvtiFZ0YFJ2dyDrpJi8RVNkisi5Y"]
+      - add_ssh_keys:
+          fingerprints: ["SHA256:oFBiZKJzzb55dqfLxh2PcBgLpJGm4kvpq88vgWTUZ1Q"]
       - attach_workspace:
           at: /tmp
       - run: 
