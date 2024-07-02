@@ -61,3 +61,5 @@
     state: started
     ports:
       - "5000:5000"
+    env:
+      SECRET_FILE: "{{SECRET_FILE}}"
