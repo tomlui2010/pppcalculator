@@ -111,16 +111,6 @@ jobs:
           command: |
             eval $(ssh-agent -s)
             ansible --version
-      # - run:
-      #     name: Setup known hosts
-      #     command: |
-      #       export INSTANCE_IP=$(cat /tmp/instance_ip.txt)
-      #       ssh-keyscan -H $INSTANCE_IP >> ~/.ssh/known_hosts
-      # - run:
-      #     name: Start SSH Agent and Add Key
-      #     command: |
-      #       eval $(ssh-agent -s)
-      #       ssh-add ~/.ssh/id_rsa # Adjust the path if needed
       - run:
           name: Run Playbook and Configure EC2 instance 
           command: |

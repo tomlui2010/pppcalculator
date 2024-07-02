@@ -47,3 +47,17 @@
   systemd:
     name: docker
     daemon_reload: True
+
+- name: Pull Docker image from Docker Hub
+  docker_image:
+    name: tomlui2010/pppcalculator
+    tag: latest
+    source: pull
+
+- name: Run Docker container
+  docker_container:
+    name: pppcalculator
+    image: tomlui2010/pppcalculator:latest
+    state: started
+    ports:
+      - "5000:5000"
