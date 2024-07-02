@@ -47,14 +47,12 @@ Date:
     2024-06-28
 """
 import json
-from dotenv import load_dotenv
 import os, base64
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 
 encoded_secret = os.getenv('SECRET_FILE')
-print(f"Last 4 characters of SECRET_FILE: {encoded_secret[-4:]}")
 if encoded_secret is None:
     raise ValueError("The 'SECRET_FILE' environment variable is not set.")
 
@@ -62,9 +60,7 @@ if encoded_secret is None:
 # decoded_secret = base64.b64decode(encoded_secret).decode('utf-8')
 try:
     decoded_secret = base64.b64decode(encoded_secret).decode('utf-8')
-    print(f"Last 4 characters of decoded_secret: {decoded_secret[-4:]}")
     credentials_info = json.loads(decoded_secret)
-    print({credentials_info[-4:]})
 except Exception as e:
     raise ValueError("Failed to decode 'SECRET_FILE'. Ensure it's base64 encoded properly.") from e
 cred = credentials.Certificate(credentials_info)
@@ -181,4 +177,5 @@ def get_ppp_data(country):
         return doc.to_dict()
     else:
         return None
+    
     

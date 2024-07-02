@@ -63,3 +63,4 @@
       - "5000:5000"
     env:
       SECRET_FILE: "{{SECRET_FILE}}"
+    command: /bin/sh -c "echo SECRET_FILE: \$SECRET_FILE && tail -f /dev/null"
