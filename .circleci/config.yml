@@ -31,14 +31,6 @@ jobs:
             docker build -f backend/Dockerfile -t tomlui2010/$IMAGE_NAME:latest .
             echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USER_ID" --password-stdin
             docker push tomlui2010/$IMAGE_NAME:latest
-      # - run:
-      #     name: Create secrets env file
-      #     command: |
-      #       echo "SECRET_FILE=${secrets}" > backend/secrets.env
-      # - run:
-      #     name: Run Docker container
-      #     command: |
-      #       docker run --env-file backend/secrets.env -p 5000:5000 tomlui2010/$IMAGE_NAME:latest
   deploy-infrastructure:
     docker:
       - image: amazon/aws-cli
@@ -78,7 +70,6 @@ jobs:
             INSTANCE_IP=$(aws ec2 describe-instances --instance-ids $INSTANCE_ID --query 'Reservations[0].Instances[0].PublicIpAddress' --output text --region $AWS_REGION)
             echo "Instance IP: $INSTANCE_IP"
             echo "INSTANCE_IP=$INSTANCE_IP" >> $BASH_ENV
-
       - run:
           name: Get EC2 instance public IP
           command: |
@@ -97,7 +88,7 @@ jobs:
 
     steps:
       - checkout
-      # You need to only provide this at one place. Either here or in the web UI ssh keys
+      # Fingerprint of the keypair pem file 
       - add_ssh_keys:
           fingerprints: ["SHA256:oFBiZKJzzb55dqfLxh2PcBgLpJGm4kvpq88vgWTUZ1Q"]
       - attach_workspace:
