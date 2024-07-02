@@ -1,18 +1,20 @@
 ---
-- name: "update apt packages."
+- name: Update and upgrade apt packages, and install Python 3, pip, and six
+  hosts: all
   become: yes
-  apt:
-    update_cache: yes
-
-- name: "upgrade packages"
-  become: yes
-  apt:
-    upgrade: yes
-
-- name: Ensure Python 3 is installed
-  raw: sudo apt-get update && sudo apt-get install -y python3 python3-pip
-  changed_when: false
-
-- name: Ensure Python 3 'six' module is installed
-  raw: sudo pip3 install six
-  changed_when: false
+  tasks:
+    - name: Update apt package cache
+      apt:
+        update_cache: yes
+    
+    - name: Upgrade all packages to the latest version
+      apt:
+        upgrade: dist
+    
+    - name: Install Python 3, pip, and six
+      apt:
+        name:
+          - python3
+          - python3-pip
+          - python3-six
+        state: present

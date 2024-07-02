@@ -106,7 +106,11 @@ jobs:
           name: Install Ansible
           command: |
             apk add --update ansible openssh-client
+      - run:
+          name: Check Ansible Version
+          command: |
             eval $(ssh-agent -s)
+            ansible --version
       # - run:
       #     name: Setup known hosts
       #     command: |
@@ -120,7 +124,7 @@ jobs:
       - run:
           name: Run Playbook and Configure EC2 instance 
           command: |
-            ansible-playbook --extra-vars "aws_access_key_id=${AWS_ACCESS_KEY_ID} aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}" -i /tmp/inventory.txt .circleci/ansible/playbook.yml 
+            ansible-playbook --extra-vars "aws_access_key_id=${AWS_ACCESS_KEY_ID} aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}" -i /tmp/inventory.txt .circleci/ansible/playbook.yml -vvv
 workflows:
   version: 2
   backend:
