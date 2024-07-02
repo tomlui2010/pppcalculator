@@ -62,7 +62,9 @@ if encoded_secret is None:
 # decoded_secret = base64.b64decode(encoded_secret).decode('utf-8')
 try:
     decoded_secret = base64.b64decode(encoded_secret).decode('utf-8')
+    print(f"Last 4 characters of decoded_secret: {decoded_secret[-4:]}")
     credentials_info = json.loads(decoded_secret)
+    print({credentials_info[-4:]})
 except Exception as e:
     raise ValueError("Failed to decode 'SECRET_FILE'. Ensure it's base64 encoded properly.") from e
 cred = credentials.Certificate(credentials_info)
