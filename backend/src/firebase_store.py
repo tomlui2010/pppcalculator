@@ -53,8 +53,8 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 
-load_dotenv(dotenv_path='secrets.env')
 encoded_secret = os.getenv('SECRET_FILE')
+print(f"Last 4 characters of SECRET_FILE: {encoded_secret[-4:]}")
 if encoded_secret is None:
     raise ValueError("The 'SECRET_FILE' environment variable is not set.")
 
