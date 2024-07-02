@@ -98,8 +98,8 @@ jobs:
     steps:
       - checkout
       # You need to only provide this at one place. Either here or in the web UI ssh keys
-      # - add_ssh_keys:
-      #     fingerprints: ["SHA256:oFBiZKJzzb55dqfLxh2PcBgLpJGm4kvpq88vgWTUZ1Q"]
+      - add_ssh_keys:
+          fingerprints: ["SHA256:gzaZXgom3oCt6vZxaUqIszn+TkFlsDl/ZFjwR+MRLps"]
       - attach_workspace:
           at: /tmp
       - run: 
