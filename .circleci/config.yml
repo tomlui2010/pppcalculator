@@ -93,7 +93,7 @@ jobs:
             - instance_ip.txt
   configure_infrastructure:
     docker:
-      - image: python:3.7-alpine3.11
+      - image: python:3.8-alpine3.20
 
     steps:
       - checkout
