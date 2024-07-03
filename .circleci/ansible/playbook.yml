@@ -10,8 +10,7 @@
     ansible_python_interpreter: /usr/bin/python3
     ansible_host_key_checking: false
     ansible_stdout_callback: yaml
+    SECRET_FILE: "{{ SECRET_FILE }}"
   roles:
     - role: common
     - role: installdocker
-      vars:
-        SECRET_FILE: "{{ lookup('env', 'SECRET_FILE') }}"
