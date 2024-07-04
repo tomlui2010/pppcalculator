@@ -134,5 +134,6 @@ workflows:
       - configure_infrastructure:
           requires:
             - deploy-infrastructure
+            - build
           context: 
             - ppp

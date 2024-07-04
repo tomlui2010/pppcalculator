@@ -70,4 +70,4 @@
     image: tomlui2010/frontend-pppcalculator:latest
     state: started
     ports:
-      - "8000:3000"
+      - "3000:3000"
