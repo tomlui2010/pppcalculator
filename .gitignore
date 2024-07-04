@@ -174,7 +174,6 @@ frontend/node_modules
 # testing
 frontend/coverage
 
-frontend/package-lock.json
 
 # production
 /build
