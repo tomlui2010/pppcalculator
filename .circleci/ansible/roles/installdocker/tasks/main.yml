@@ -54,12 +54,20 @@
     tag: latest
     source: pull
 
-- name: Run Docker container
+- name: Run backend Docker container
   docker_container:
-    name: pppcalculator
-    image: tomlui2010/pppcalculator:latest
+    name: pppcalculator_backend
+    image: tomlui2010/backend-pppcalculator:latest
     state: started
     ports:
       - "5000:5000"
     env:
       SECRET_FILE: "{{SECRET_FILE}}"
+
+- name: Run frontend Docker container
+  docker_container:
+    name: pppcalculator_frontend
+    image: tomlui2010/frontend-pppcalculator:latest
+    state: started
+    ports:
+      - "8000:3000"

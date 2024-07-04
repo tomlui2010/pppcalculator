@@ -13,7 +13,7 @@ commands:
             echo << parameters.stackname >>
             aws cloudformation delete-stack --stack-name << parameters.stackname >> --debug
 jobs:
-  backend_app_build:
+  build:
     docker:
       - image: cimg/python:3.10.2
     steps:
@@ -26,11 +26,25 @@ jobs:
             source ~/.venv/bin/activate
             pip install -r backend/requirements.txt
       - run:
-          name: Build and push to Docker Hub
+          name: Build and push backend app docker image to Docker Hub
           command: |
-            docker build -f backend/Dockerfile -t tomlui2010/$IMAGE_NAME:latest .
+            docker build -f backend/Dockerfile -t tomlui2010/backend-$IMAGE_NAME:latest .
             echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USER_ID" --password-stdin
-            docker push tomlui2010/$IMAGE_NAME:latest
+            docker push tomlui2010/backend-$IMAGE_NAME:latest
+      - run:
+          name: Build and push frontend app docker image to Docker Hub
+          command: |
+            docker build -f frontend/Dockerfile -t tomlui2010/frontend-$IMAGE_NAME:latest .
+            echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USER_ID" --password-stdin
+            docker push tomlui2010/frontend-$IMAGE_NAME:latest
+  frontend_app_build:
+    docker:
+      - image: cimg/python:3.10.2
+    steps:
+      - checkout
+      - setup_remote_docker
+
+    
   deploy-infrastructure:
     docker:
       - image: amazon/aws-cli
@@ -111,7 +125,7 @@ workflows:
   version: 2
   backend:
     jobs:
-      - backend_app_build:
+      - build:
           context:
             - ppp
       - deploy-infrastructure:
