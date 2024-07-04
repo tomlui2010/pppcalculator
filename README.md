@@ -1,1 +1,1 @@
-# pppcalculator backend and frontend
+# pppcalculator backend python and frontend
