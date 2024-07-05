@@ -1,5 +1,5 @@
 ---
-- name: Install Docker on AWS EC2 instance
+- name: Configure AWS EC2 instance
   hosts: BACKEND
   remote_user: ubuntu
   become: true
@@ -13,4 +13,4 @@
     SECRET_FILE: "{{ SECRET_FILE }}"
   roles:
     - role: common
-    - role: installdocker
+    - role: setup
