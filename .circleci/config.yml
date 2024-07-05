@@ -96,6 +96,7 @@ jobs:
             jinja2 --format=yaml frontend/nginx.conf.j2 \
               -D domain_name=$EC2_DOMAIN_NAME \
               > frontend/nginx.conf
+            cat frontend/nginx.conf
       - run:
           name: Build and push frontend app docker image to Docker Hub
           command: |
