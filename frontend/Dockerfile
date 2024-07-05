@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM node:18-alpine as build
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -12,14 +12,17 @@ COPY frontend/package-lock.json /app/
 # Install npm dependencies
 RUN npm install
 
-# Install react-scripts globally
-RUN npm install react-scripts@5.0.1 -g
-
 # Copy the rest of the application code
 COPY frontend/ /app/
 
-# Expose port 80 to the outside world
-EXPOSE 3000
+RUN npm run build
+
+# Stage 2: Serve the React app with Nginx
+FROM nginx:stable-alpine
+
+COPY --from=build /app/build /usr/share/nginx/html
+
+EXPOSE 80
 
 # Start the React app
-CMD ["npm", "start"]
+CMD ["nginx", "-g", "daemon off"]
