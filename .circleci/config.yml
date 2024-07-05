@@ -60,7 +60,7 @@ jobs:
             echo "[BACKEND]" > /tmp/inventory.ini
             echo "$INSTANCE_IP ansible_user=ubuntu" >> /tmp/inventory.ini
             echo "$INSTANCE_IP" > /tmp/instance_ip.txt
-            echo "$INSTANCE_PUBLIC_DNS > /tmp/instance_public_dns.txt"
+            echo "$INSTANCE_PUBLIC_DNS" > /tmp/instance_public_dns.txt
             cat /tmp/inventory.ini
       - persist_to_workspace:
           root: /tmp
