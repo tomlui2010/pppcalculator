@@ -17,5 +17,6 @@ CICD: CircleCI
 ![CICD Project](CICD_project.png)
 ![CICD Project](CICD_workflow.png)
 
-
+App Demo: 
+![App Demo](App_Demo.mov)
 
