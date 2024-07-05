@@ -26,17 +26,17 @@ const Result = () => {
       >
         {result !== null && result !== undefined ? (
           <>
-            <Typography variant="h3" gutterBottom align={"center"}>
+            <Typography variant="subtitle1" gutterBottom align={"center"}>
               PPP Salary Calculation
             </Typography>
-            <Typography variant="body1" align={"center"}>
-              You require a salary of <h6>{result}</h6> in <h6>{target}</h6> to
-              live a similar quality of life as you would live with a salary of{" "}
-              <h6>{income}</h6> in <h6>{source}</h6>
+            <Typography variant="body1">
+              You require a salary of {result} in {target} to live a similar
+              quality of life as you would live with a salary of {income} in{" "}
+              {source}
             </Typography>
           </>
         ) : (
-          <Typography variant="h6" color="error">
+          <Typography variant="subtitle1" color="error">
             Failed to calculate the PPP value. Please check your inputs or try
             again later.
           </Typography>
