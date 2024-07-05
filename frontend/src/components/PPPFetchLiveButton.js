@@ -18,14 +18,15 @@ export default function PPP() {
         setLoading(false);
         return; // Skip further processing since there's no new data
       }
-      if (!response.ok) {
+      if (response.status !== 200) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       } else {
         setLoading(false);
+        const data = await response.json();
+        setData(data);
+        console.log("Response from API: " + data.message);
       }
-      const data = await response.json();
-      setData(data);
-      console.log("Response from API: " + data.message);
+
     } catch (error) {
       console.log(error);
       setError(error.message);
