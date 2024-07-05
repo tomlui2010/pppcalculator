@@ -11,6 +11,13 @@ export default function PPP() {
       const response = await fetch("/fetchlivedata", {
         mode: "cors",
       });
+      // Check if the response status is 304 and handle it
+      if (response.status === 304) {
+        console.log("Data not modified; using cached version.");
+        // Handle the case where data is not modified. You can use cached data here.
+        setLoading(false);
+        return; // Skip further processing since there's no new data
+      }
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       } else {
