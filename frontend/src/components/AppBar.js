@@ -20,12 +20,17 @@ const AppBarComponent = ({ light }) => {
       >
         <Toolbar
           sx={{
+            display: "flex",
+            flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
             height: "100px",
+            width: "100%",
+            maxWidth: 600,
+            mx: "auto",
           }}
         >
-          <Typography text-align="center" variant="h2">
+          <Typography text-align="center" variant="h4">
             PPP Salary Calculator
           </Typography>
         </Toolbar>
