@@ -1,23 +1,27 @@
-server {
-    listen 80;
-    server_name {{ domain_name }};
+http {
+    include       /etc/nginx/mime.types;
+    default_type  application/octet-stream;
 
-    root /usr/share/nginx/html;
+    server {
+        listen 80;
+        server_name {{ domain_name }};
 
-    index index.html;
+        root /usr/share/nginx/html;
+        index index.html;
 
-    location / {
-        try_files $uri $uri/ /index.html;
-    }
+        location / {
+            try_files $uri $uri/ /index.html;
+        }
 
-    location /static {
-        alias /usr/share/nginx/html/build/static;
-        expires 30d;
-        add_header Cache-Control "public, max-age=2592000";
-    }
+        location /static {
+            alias /usr/share/nginx/html/build/static;
+            expires 30d;
+            add_header Cache-Control "public, max-age=2592000";
+        }
 
         # Enable Gzip compression for better performance
-    gzip on;
-    gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
-    gzip_min_length 256;
+        gzip on;
+        gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+        gzip_min_length 256;
+    }
 }
