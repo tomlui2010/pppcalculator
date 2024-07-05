@@ -18,5 +18,4 @@ CICD: CircleCI
 ![CICD Project](CICD_workflow.png)
 
 App Demo: 
-![App Demo](App_Demo.mov)
-
+[![App Demo](App_Demo.gif)](https://github.com/tomlui2010/pppcalculator/raw/main/App_Demo.mov)
