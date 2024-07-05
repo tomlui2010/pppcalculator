@@ -25,4 +25,4 @@ COPY --from=build /app/build /usr/share/nginx/html
 EXPOSE 80
 
 # Start the React app
-CMD ["nginx", "-g", "daemon off"]
+CMD ["nginx", "-g", "daemon off;"]
